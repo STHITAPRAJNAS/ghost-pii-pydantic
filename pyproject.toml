@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ghost-pii"
+version = "0.1.0"
+description = "Enterprise-Grade PII Redaction for Python."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Sthitaprajna Sahoo", email = "papu.sahoo@gmail.com" }]
+dependencies = [
+    "pydantic>=2.0.0",
+]
+
+[project.urls]
+Homepage      = "https://github.com/STHITAPRAJNAS/ghost-pii"
+Repository    = "https://github.com/STHITAPRAJNAS/ghost-pii"
+Documentation = "https://github.com/STHITAPRAJNAS/ghost-pii#readme"
+Issues        = "https://github.com/STHITAPRAJNAS/ghost-pii/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "mypy>=1.10",
+    "ruff>=0.4",
+    "email-validator>=2.0.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ghost_pii"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts   = "-v --tb=short"
