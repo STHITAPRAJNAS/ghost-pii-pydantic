@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.2] - 2026-04-11
+- Official release to PyPI as ghost-pii-pydantic.
+
 ## [0.1.1] - 2026-04-11
 - Project renamed to ghost-pii-pydantic for PyPI compatibility.
 
