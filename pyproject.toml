@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "ghost-pii"
-version = "0.1.0"
-description = "Enterprise-Grade PII Redaction for Python."
+name = "ghost-pii-pydantic"
+version = "0.1.1"
+description = "Enterprise-Grade PII Redaction for Pydantic Models."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
@@ -30,10 +30,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage      = "https://github.com/STHITAPRAJNAS/ghost-pii"
-Repository    = "https://github.com/STHITAPRAJNAS/ghost-pii"
-Documentation = "https://github.com/STHITAPRAJNAS/ghost-pii#readme"
-Issues        = "https://github.com/STHITAPRAJNAS/ghost-pii/issues"
+Homepage      = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic"
+Repository    = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic"
+Documentation = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic#readme"
+Issues        = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic/issues"
 
 [project.optional-dependencies]
 dev = [

@@ -1,13 +1,13 @@
-# GhostPII 👻
+# GhostPII 👻 (ghost-pii-pydantic)
 
 Enterprise-Grade PII Redaction for Python. Type-Safe, Invisible by Default.
 
-[![PyPI version](https://img.shields.io/pypi/v/ghost-pii.svg)](https://pypi.org/project/ghost-pii/)
-[![Python](https://img.shields.io/pypi/pyversions/ghost-pii.svg)](https://pypi.org/project/ghost-pii/)
+[![PyPI version](https://img.shields.io/pypi/v/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
+[![Python](https://img.shields.io/pypi/pyversions/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 [![Typed](https://img.shields.io/badge/typing-py.typed-informational)](src/ghost_pii/py.typed)
 
-GhostPII solves the "Logged Secret" problem once and for all. It provides a smart string proxy that automatically redacts itself when accessed by unsafe contexts (logging, printing, tracebacks) but remains fully functional for your business logic, databases, and APIs.
+GhostPII (published as `ghost-pii-pydantic`) solves the "Logged Secret" problem once and for all. It provides a smart string proxy that automatically redacts itself when accessed by unsafe contexts (logging, printing, tracebacks) but remains fully functional for your business logic, databases, and APIs.
 
 ## Features
 
@@ -23,7 +23,7 @@ GhostPII solves the "Logged Secret" problem once and for all. It provides a smar
 ## Installation
 
 ```bash
-pip install ghost-pii
+pip install ghost-pii-pydantic
 ```
 
 ## Quick Start
