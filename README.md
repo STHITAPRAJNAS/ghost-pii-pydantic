@@ -1,10 +1,10 @@
-# GhostPII 👻
+# GhostPII 👻 (ghost-pii-pydantic)
 
 Enterprise-Grade PII Redaction for Pydantic. Type-Safe, Invisible by Default.
 
 [![PyPI version](https://img.shields.io/pypi/v/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
 [![Python](https://img.shields.io/pypi/pyversions/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
-[![CI](https://github.com/STHITAPRAJNAS/ghost-pii/actions/workflows/ci.yml/badge.svg)](https://github.com/STHITAPRAJNAS/ghost-pii/actions/workflows/ci.yml)
+[![CI](https://github.com/STHITAPRAJNAS/ghost-pii-pydantic/actions/workflows/ci.yml/badge.svg)](https://github.com/STHITAPRAJNAS/ghost-pii-pydantic/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 [![Typed](https://img.shields.io/badge/typing-py.typed-informational)](src/ghost_pii/py.typed)
 

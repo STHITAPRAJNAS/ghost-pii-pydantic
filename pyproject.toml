@@ -30,10 +30,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage      = "https://github.com/STHITAPRAJNAS/ghost-pii"
-Repository    = "https://github.com/STHITAPRAJNAS/ghost-pii"
-Documentation = "https://github.com/STHITAPRAJNAS/ghost-pii#readme"
-Issues        = "https://github.com/STHITAPRAJNAS/ghost-pii/issues"
+Homepage      = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic"
+Repository    = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic"
+Documentation = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic#readme"
+Issues        = "https://github.com/STHITAPRAJNAS/ghost-pii-pydantic/issues"
 
 [project.optional-dependencies]
 dev = [
