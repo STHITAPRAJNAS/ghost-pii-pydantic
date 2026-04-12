@@ -1,6 +1,6 @@
-# GhostPII 👻 (ghost-pii-pydantic)
+# GhostPII 👻
 
-Enterprise-Grade PII Redaction for Pydantic. Type-Safe, Invisible by Default.
+**Enterprise-Grade PII Redaction for Pydantic.**
 
 [![PyPI version](https://img.shields.io/pypi/v/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
 [![Python](https://img.shields.io/pypi/pyversions/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
@@ -8,7 +8,10 @@ Enterprise-Grade PII Redaction for Pydantic. Type-Safe, Invisible by Default.
 [![License](https://img.shields.io/badge/license-Apache%202.0-green)](LICENSE)
 [![Typed](https://img.shields.io/badge/typing-py.typed-informational)](src/ghost_pii/py.typed)
 
-GhostPII (published as `ghost-pii-pydantic`) solves the "Logged Secret" problem once and for all. It provides a smart string proxy that automatically redacts itself when accessed by unsafe contexts (logging, printing, tracebacks) but remains fully functional for your business logic, databases, and APIs.
+> **Note:** This project is published on PyPI as [`ghost-pii-pydantic`](https://pypi.org/project/ghost-pii-pydantic/).
+
+GhostPII solves the "Logged Secret" problem once and for all. It provides a smart string proxy that automatically redacts itself when accessed by unsafe contexts (logging, printing, tracebacks) but remains fully functional for your business logic, databases, and APIs.
+
 
 ## Features
 
@@ -35,7 +38,7 @@ from ghost_pii import PII, unmask_pii
 
 class User(BaseModel):
     name: PII[str]
-    email: PII[EmailStr]
+    email: PII[EmailStr] # Validates as email (via Pydantic), redacts in logs
 
 user = User(name="John Doe", email="john@example.com")
 
