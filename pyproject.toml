@@ -13,7 +13,7 @@ keywords = [
 ]
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "Apache-2.0" }
+license = { file = "LICENSE" }
 authors = [{ name = "Sthitaprajna Sahoo", email = "papu.sahoo@gmail.com" }]
 classifiers = [
     "Development Status :: 4 - Beta",
