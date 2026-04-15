@@ -2,16 +2,23 @@ import sys
 import types
 from typing import Optional
 
-# Default list of modules that are considered "unsafe" for PII rendering.
-# When GhostPII detects these in the call stack, it redacts.
+# Default set of modules considered unsafe for PII rendering.
+# When GhostPII detects any of these in the call stack it redacts.
 DEFAULT_UNSAFE_MODULES = {
+    # stdlib logging
     "logging",
+    # stdlib display / tracing
     "sys",
-    "rich",
     "traceback",
-    "builtins",  # for print()
+    "builtins",  # print()
     "pprint",
     "inspect",
+    # popular structured-logging libraries
+    "structlog",
+    "loguru",
+    # rich console / pretty-printing
+    "rich",
+    # test runners (prevent PII leaking into test output)
     "pytest",
     "_pytest",
 }
@@ -19,19 +26,17 @@ DEFAULT_UNSAFE_MODULES = {
 
 def is_unsafe_caller() -> bool:
     """
-    Analyzes the current call stack to determine if the requester is an
-    unauthorized or unsafe context (like a logger or print statement).
+    Walks the current call stack to determine whether the caller is an unsafe
+    context (logger, print, traceback, etc.).
 
-    Performance: This function uses fast-fail logic. It only walks the stack
-    if necessary and limits the depth of inspection.
+    Uses fast-fail logic — stops as soon as an unsafe module is found or the
+    depth limit is reached, keeping overhead low for safe callers.
     """
-    # Start at the frame that called the __str__ or __repr__ (usually level 2 or 3)
     try:
         frame = sys._getframe(2)
     except ValueError:
         return False
 
-    # Track depth to avoid performance degradation in deep stacks
     depth = 0
     max_depth = 12
 
@@ -39,14 +44,10 @@ def is_unsafe_caller() -> bool:
     while current_frame and depth < max_depth:
         module_name = current_frame.f_globals.get("__name__", "")
         if module_name:
-            # Check for the base module name (e.g., 'logging' from 'logging.handlers')
             base_module = module_name.split(".")[0]
             if base_module in inspector.unsafe_modules:
                 return True
-
-            # Special case for standard print() and sys.stdout access
-            if module_name == "__main__" or module_name == "builtins":
-                # If we're inside a print call or sys access, we redact
+            if module_name in ("__main__", "builtins"):
                 return True
 
         current_frame = current_frame.f_back
@@ -60,7 +61,32 @@ class Inspector:
         self.unsafe_modules = DEFAULT_UNSAFE_MODULES.copy()
 
     def add_unsafe_module(self, name: str) -> None:
+        """
+        Register an additional module as unsafe so GhostPII redacts when
+        it appears in the call stack.
+
+        Use this to cover custom loggers, observability SDKs, or any other
+        module that should never see plaintext PII::
+
+            from ghost_pii import add_unsafe_module
+            add_unsafe_module("opentelemetry")
+            add_unsafe_module("datadog")
+        """
         self.unsafe_modules.add(name)
+
+    def remove_unsafe_module(self, name: str) -> None:
+        """Remove a module from the unsafe set."""
+        self.unsafe_modules.discard(name)
 
 
 inspector = Inspector()
+
+
+def add_unsafe_module(name: str) -> None:
+    """Module-level convenience wrapper for ``inspector.add_unsafe_module``."""
+    inspector.add_unsafe_module(name)
+
+
+def remove_unsafe_module(name: str) -> None:
+    """Module-level convenience wrapper for ``inspector.remove_unsafe_module``."""
+    inspector.remove_unsafe_module(name)

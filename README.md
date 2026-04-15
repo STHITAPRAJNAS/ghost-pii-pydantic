@@ -22,12 +22,15 @@ GhostPII solves the **"Logged Secret"** problem: sensitive fields (emails, SSNs,
 
 | Feature | Description |
 |---------|-------------|
-| **Auto-Magical Redaction** | Automatically detects `print()` and `logging` calls to mask PII. |
+| **Auto-Magical Redaction** | Automatically detects `print()`, `logging`, `structlog`, `loguru`, and more. |
+| **Partial Masking** | Show `jo***@ex***.com` instead of `[REDACTED]` — ideal for UIs and audit logs. |
 | **Pydantic Native** | First-class support for Pydantic v2 `Annotated` types. |
 | **Strict Mode** | Opt-in for 100% redaction everywhere unless explicitly unmasked. |
 | **Tainted Memory** | Operations on PII (like concatenation) stay PII. No accidental leaks. |
-| **Context Aware** | Use `unmask_pii()` context manager for explicit, safe data access. |
-| **Zero-Performance-Cost** | Optimized stack inspection with fast-fail logic. |
+| **Context Aware** | `unmask_pii()` context manager with optional audit callback. |
+| **asyncio Safe** | Uses `contextvars.ContextVar` — isolated per thread and per async task. |
+| **pytest Plugin** | Built-in `ghost_pii_strict` fixture and `--ghost-pii-strict` CLI flag. |
+| **Extensible** | Register custom unsafe modules (OpenTelemetry, Datadog, etc.) at runtime. |
 
 ## Installation
 
@@ -105,6 +108,52 @@ with unmask_pii():
     print(labeled_name) # Output: User: John Doe
 ```
 
+## Partial Masking
+
+Use `masked_pii()` when you need identifiable-but-safe values — customer service UIs, audit logs, support dashboards.
+
+```python
+from ghost_pii import masked_pii, MaskStrategy
+
+class User(BaseModel):
+    email: masked_pii(EmailStr, MaskStrategy.EMAIL)   # jo***@ex***.com
+    ssn:   masked_pii(str,      MaskStrategy.SSN)     # ***-**-6789
+    card:  masked_pii(str,      MaskStrategy.LAST4)   # ************1111
+    phone: masked_pii(str,      MaskStrategy.PHONE)   # +44*****456
+
+user = User(email="john@example.com", ssn="123-45-6789",
+            card="4111111111111111", phone="+447911123456")
+
+print(user.email)  # jo***@ex***.com
+print(user.ssn)    # ***-**-6789
+
+with unmask_pii():
+    print(user.email)  # john@example.com
+```
+
+## Audit Hook
+
+Pass `on_access` to `unmask_pii()` to emit a compliance trail whenever PII is deliberately exposed — required for SOC2 / GDPR audit logs.
+
+```python
+import logging
+audit = logging.getLogger("audit")
+
+with unmask_pii(on_access=lambda: audit.info("PII accessed by service X")):
+    send_email(to=str(user.email))
+```
+
+## Extending Unsafe Modules
+
+GhostPII covers `logging`, `structlog`, `loguru`, `rich`, `print`, and test runners out of the box. Add your own:
+
+```python
+from ghost_pii import add_unsafe_module
+
+add_unsafe_module("opentelemetry")
+add_unsafe_module("datadog")
+```
+
 ## Async Support
 
 GhostPII works transparently in async services. The `unmask_pii()` context manager is sync-safe and can be used inside `async` functions:
@@ -139,6 +188,29 @@ GhostPII is designed to adapt to different compliance levels:
 from ghost_pii import set_strict_mode
 
 set_strict_mode(True) # Best practice for production PII handling
+```
+
+## pytest Plugin
+
+GhostPII ships a built-in pytest plugin (auto-registered via `pytest11` entry point).
+
+**Per-test strict mode:**
+```python
+def test_no_pii_in_logs(ghost_pii_strict):
+    user = User(name="John Doe", email="john@example.com")
+    assert str(user.email) == "[REDACTED]"   # strict: always redacted
+    with unmask_pii():
+        assert str(user.email) == "john@example.com"
+```
+
+**Session-wide (CI enforcement):**
+```bash
+pytest --ghost-pii-strict
+```
+
+**Disable the plugin:**
+```bash
+pytest -p no:ghost-pii
 ```
 
 ## Why GhostPII vs Alternatives
