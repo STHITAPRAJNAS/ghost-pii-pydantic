@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2026-04-15
+
+### Fixed
+- Remove redundant `pytest_plugins` registration in `conftest.py`.
+- Resolve `ruff` lint errors in examples and tests.
+- Update `README.md` with accurate `MaskStrategy` and `unmask_pii` examples.
+
 ## [0.2.0] - 2026-04-15
 
 ### New Features
