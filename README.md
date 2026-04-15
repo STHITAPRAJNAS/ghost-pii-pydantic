@@ -55,10 +55,10 @@ print(user)
 # Output: name=GhostString('[REDACTED]') email=GhostString('[REDACTED]')
 
 # 2. Functional: Works in business logic/DBs
-# (Internal calls to user.email return the real string)
+# (String conversion or attribute access in non-unsafe contexts reveals the real string)
 db.execute("INSERT INTO users VALUES (?)", [user.email])
 # Successfully inserts "john@example.com"
-
+```
 # 3. Explicit: Use context manager for sensitive tasks
 with unmask_pii():
     print(user) 
@@ -112,13 +112,20 @@ with unmask_pii():
 
 Use `masked_pii()` when you need identifiable-but-safe values — customer service UIs, audit logs, support dashboards.
 
+Supported strategies in `MaskStrategy`:
+- `FULL`: Always shows `[REDACTED]`. (Default)
+- `EMAIL`: Partially masks local-part and domain, e.g. `jo***@ex***.com`.
+- `LAST4`: Keeps the last four digits, e.g. `****6789`.
+- `PHONE`: Keeps country prefix and last three digits, e.g. `+44*****456`.
+- `SSN`: Shows only the last four digits in SSN format, e.g. `***-**-6789`.
+
 ```python
 from ghost_pii import masked_pii, MaskStrategy
 
 class User(BaseModel):
     email: masked_pii(EmailStr, MaskStrategy.EMAIL)   # jo***@ex***.com
     ssn:   masked_pii(str,      MaskStrategy.SSN)     # ***-**-6789
-    card:  masked_pii(str,      MaskStrategy.LAST4)   # ************1111
+    card:  masked_pii(str,      MaskStrategy.LAST4)   # ****1111
     phone: masked_pii(str,      MaskStrategy.PHONE)   # +44*****456
 
 user = User(email="john@example.com", ssn="123-45-6789",
@@ -137,8 +144,11 @@ Pass `on_access` to `unmask_pii()` to emit a compliance trail whenever PII is de
 
 ```python
 import logging
+from ghost_pii import unmask_pii
+
 audit = logging.getLogger("audit")
 
+# The callback is triggered exactly once when entering the context manager
 with unmask_pii(on_access=lambda: audit.info("PII accessed by service X")):
     send_email(to=str(user.email))
 ```
