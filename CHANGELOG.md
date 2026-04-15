@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2026-04-15
+
+### Fixed
+- Standardized license metadata in `pyproject.toml`.
+- Added `NOTICE` file for dependency attribution (Pydantic MIT license).
+- Added Apache 2.0 license headers to all source files.
+
 ## [0.2.1] - 2026-04-15
 
 ### Fixed

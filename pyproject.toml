@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ghost-pii-pydantic"
-version = "0.2.1"
+version = "0.2.2"
 description = "Automatic PII redaction for Pydantic v2 — masks sensitive data in logs and print statements. GDPR/HIPAA-friendly."
 keywords = [
     "pii", "pydantic", "redaction", "data-privacy", "gdpr", "hipaa",
