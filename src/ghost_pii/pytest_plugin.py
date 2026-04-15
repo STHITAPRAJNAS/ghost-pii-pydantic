@@ -28,7 +28,7 @@ from __future__ import annotations
 
 import pytest
 
-from ghost_pii.context import get_state, set_strict_mode, _state_var
+from ghost_pii.context import get_state, set_strict_mode
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
