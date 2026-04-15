@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-04-15
+- SEO: improved PyPI description, added keywords for GDPR/HIPAA/privacy/logging discoverability.
+- docs: expanded README with async usage example, competitor comparison table (vs presidio, scrubadub), and clearer intro.
+- added SECURITY.md with private vulnerability disclosure process.
+
 ## [0.1.2] - 2026-04-11
 - Official release to PyPI as ghost-pii-pydantic.
 

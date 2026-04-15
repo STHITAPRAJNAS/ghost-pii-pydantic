@@ -1,6 +1,6 @@
 # GhostPII 👻
 
-**Enterprise-Grade PII Redaction for Pydantic.**
+**Automatic PII redaction for Pydantic v2 — zero-config, GDPR/HIPAA-friendly.**
 
 [![PyPI version](https://img.shields.io/pypi/v/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
 [![Python](https://img.shields.io/pypi/pyversions/ghost-pii-pydantic.svg)](https://pypi.org/project/ghost-pii-pydantic/)
@@ -10,7 +10,12 @@
 
 > **Note:** This project is published on PyPI as [`ghost-pii-pydantic`](https://pypi.org/project/ghost-pii-pydantic/).
 
-GhostPII solves the "Logged Secret" problem once and for all. It provides a smart string proxy that automatically redacts itself when accessed by unsafe contexts (logging, printing, tracebacks) but remains fully functional for your business logic, databases, and APIs.
+GhostPII solves the **"Logged Secret"** problem: sensitive fields (emails, SSNs, credit card numbers, API keys) leaking into logs and tracebacks. It provides a smart string proxy that automatically redacts itself in unsafe contexts (`logging`, `print`, tracebacks) while remaining fully functional for business logic, databases, and APIs.
+
+- Drop-in Pydantic v2 `Annotated` type — no middleware, no post-processing
+- Tainted memory propagation — concatenated strings stay redacted
+- Strict mode for FinTech / HealthTech / high-compliance environments
+- Works with sync and async Python services
 
 
 ## Features
@@ -100,6 +105,26 @@ with unmask_pii():
     print(labeled_name) # Output: User: John Doe
 ```
 
+## Async Support
+
+GhostPII works transparently in async services. The `unmask_pii()` context manager is sync-safe and can be used inside `async` functions:
+
+```python
+import asyncio
+from ghost_pii import PII, unmask_pii
+
+class UserEvent(BaseModel):
+    user_id: str
+    email: PII[str]
+
+async def send_confirmation(event: UserEvent):
+    # Logging is safe — email is auto-redacted
+    logger.info("Sending confirmation to %s", event.email)
+
+    with unmask_pii():
+        await smtp_client.send(to=str(event.email), subject="Confirm your account")
+```
+
 ## Enterprise Strategy
 
 GhostPII is designed to adapt to different compliance levels:
@@ -115,6 +140,20 @@ from ghost_pii import set_strict_mode
 
 set_strict_mode(True) # Best practice for production PII handling
 ```
+
+## Why GhostPII vs Alternatives
+
+| | GhostPII | [presidio](https://github.com/microsoft/presidio) | [scrubadub](https://github.com/LeapBeyond/scrubadub) | Manual field redaction |
+|---|---|---|---|---|
+| **Integration model** | Pydantic `Annotated` type | NLP pipeline / scrubber | String scrubber | Ad-hoc |
+| **Auto-redacts in logs** | Yes — zero config | No | No | No |
+| **Preserves value for DB/API** | Yes | No (destructive) | No (destructive) | Depends |
+| **Tainted memory propagation** | Yes | No | No | No |
+| **Strict / audit mode** | Yes | No | No | Manual |
+| **Setup overhead** | `pip install` + type annotation | NER models, language packs | Pattern config | High |
+| **Best for** | Pydantic services, FastAPI, microservices | Bulk text anonymisation | Legacy string scrubbing | Simple one-off cases |
+
+**TL;DR:** presidio and scrubadub are great for scrubbing free-text blobs. GhostPII is purpose-built for Pydantic models where you need the real value to flow through your app but never appear in logs.
 
 ## Contributing
 
