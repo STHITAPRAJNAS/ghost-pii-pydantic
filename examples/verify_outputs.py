@@ -7,12 +7,12 @@ class User(BaseModel):
 
 user = User(name="John Doe", email="john@example.com")
 
-print(f"--- Default Print ---")
+print("--- Default Print ---")
 print(user)
 
-print(f"\n--- Model Dump ---")
+print("\n--- Model Dump ---")
 print(user.model_dump())
 
 with unmask_pii():
-    print(f"\n--- Unmasked Print ---")
+    print("\n--- Unmasked Print ---")
     print(user)
