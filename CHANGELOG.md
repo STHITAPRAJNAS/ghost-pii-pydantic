@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2026-04-20
+
+### Fixed
+- Use SPDX license expression (`"Apache-2.0"`) in `pyproject.toml` so PyPI displays structured license metadata.
+
 ## [0.2.2] - 2026-04-15
 
 ### Fixed
